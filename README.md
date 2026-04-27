@@ -1,72 +1,112 @@
-# CSCE 676 Project: Semantic & Structural Mining of Amazon Reviews
+# CSCE 676 Final Project: Amazon Video Games Review Mining
 
-## Overview
+This repository contains the final curated notebook and supporting code for a CSCE 676 project on the Amazon Review Data 2018 `Video_Games_5` category.
 
-This project analyzes the Amazon Reviews dataset using text mining and graph mining techniques. It combines course methods from CSCE 676—such as embeddings, clustering, and graph analysis—with advanced approaches including transformer-based embeddings and topic modeling.
+Start here: `main_notebook.ipynb`
 
-The goal is to explore how semantic information from review text and structural information from user–product networks can be integrated to uncover meaningful product insights.
+Project video: https://www.youtube.com/watch?v=EonSS0aVjBI
 
----
+## Project Question
 
-## Objectives
+The project studies one focused question:
 
-- Perform exploratory data analysis on large-scale review data
-- Apply text mining techniques (TF-IDF, embeddings)
-- Construct and analyze user–product or product–product graphs
-- Compare traditional methods with advanced embedding approaches
-- Investigate relationships between semantic similarity and graph structure
+**Do products that look similar in review language also occupy similar positions in a shared-reviewer graph?**
 
----
+Short answer: **not strongly**. The final analysis finds weak alignment between semantic clusters and graph clusters, which suggests that review language and reviewer-overlap structure capture different aspects of the category.
+
+The semantic view comes from TF-IDF representations of product-level review text. The structural view comes from a graph where two products are connected when the same reviewers appear on both products. The final notebook compares those two views and uses topic modeling to interpret the text clusters.
+
+## Repository Layout
+
+- `main_notebook.ipynb`: final notebook written as the project story
+- `checkpoints/checkpoint_1.ipynb`: project checkpoint 1 notebook
+- `checkpoints/checkpoint_2.ipynb`: project checkpoint 2 notebook
+- `src/amazon_video_games_project/analysis.py`: reusable analysis pipeline
+- `scripts/download_video_games_data.py`: helper script to fetch the Video Games 5-core file
+- `scripts/run_video_games_analysis.py`: CLI entrypoint that runs the full analysis and writes figures/tables
+- `scripts/build_final_notebook.py`: regenerates the curated final notebook with concrete findings
+- `requirements.txt`: Python package requirements for the project
 
 ## Dataset
 
-**Dataset:** Amazon Reviews Dataset (Stanford SNAP)
+- Source: [Amazon Review Data (2018)](https://nijianmo.github.io/amazon/index.html)
+- Category used here: `Video_Games_5`
+- Expected local path: `data/raw/Video_Games_5.json.gz`
 
-This dataset includes:
-- User IDs
-- Product IDs
-- Ratings (1–5)
-- Review text
-- Timestamps
-- Optional product graph data (co-purchase / co-view links)
+The raw dataset is not committed to the repository because of size.
 
-⚠️ The raw dataset is **not included** in this repository due to size and licensing considerations.  
-Please download it directly from the official SNAP website.
+## Setup
 
----
+Create and activate a virtual environment, then install the requirements:
 
-## Methods
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+```
 
-### Course Techniques
-- Text vectorization (TF-IDF / embeddings)
-- Clustering
-- Graph construction and degree analysis
-- Community detection
+If `matplotlib` complains about a non-writable config directory in WSL, set:
 
-### Beyond-Course Techniques
-- Transformer-based sentence embeddings
-- Topic modeling (e.g., LDA or BERTopic)
-- Advanced graph representation learning (optional extension)
+```bash
+export MPLCONFIGDIR=/tmp/matplotlib
+```
 
----
+## Download the Dataset
 
-## Ethical & Bias Considerations
+```bash
+python scripts/download_video_games_data.py
+```
 
-- Reviews are self-selected and may reflect sentiment bias.
-- Popular products may dominate analysis.
-- No personally identifiable information is used.
-- Results are analyzed at aggregate levels only.
+Or manually place the downloaded file at `data/raw/Video_Games_5.json.gz`.
 
----
+## Run the Analysis
+
+```bash
+python scripts/run_video_games_analysis.py
+```
+
+The script writes:
+
+- `outputs/video_games/summary.json`
+- `outputs/video_games/product_results.csv`
+- `outputs/video_games/text_cluster_terms.csv`
+- `outputs/video_games/topic_terms.csv`
+- `outputs/video_games/figures/*.png`
+
+To regenerate the notebook after rerunning the analysis:
+
+```bash
+python scripts/build_final_notebook.py
+```
+
+## Open the Final Notebook
+
+After the dataset is present, open:
+
+- `main_notebook.ipynb`
+
+The notebook is designed to be the clean final project narrative rather than a scratchpad. It covers motivation, research question, preprocessing choices, semantic analysis, graph analysis, results, and conclusions.
+
+## Methods Used
+
+Course-aligned methods:
+
+- TF-IDF text mining
+- KMeans clustering
+- Graph construction from shared reviewers
+- PageRank, clustering coefficient, and community detection
+
+Extension method:
+
+- LDA topic modeling for cluster interpretation
+
+## Ethical Notes
+
+- Amazon reviews are self-selected and may overrepresent strong positive or negative opinions.
+- Popular products attract more reviews and therefore more graph connections.
+- Results are reported only at aggregate product level.
 
 ## License
 
-This repository is licensed under the MIT License.  
-The Amazon dataset remains subject to its original licensing terms.
-
----
-
-## Author
-
-CSCE 676 – Data Mining and Analysis  
-Texas A&M University
+This repository is licensed under the MIT License. The Amazon review data remains subject to its original terms.
