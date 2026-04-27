@@ -27,13 +27,35 @@ The semantic view comes from TF-IDF representations of product-level review text
 - `scripts/build_final_notebook.py`: regenerates the curated final notebook with concrete findings
 - `requirements.txt`: Python package requirements for the project
 
+```text
+CSCE-676-Project-Semantic-Structural-Mining-of-Amazon-Reviews/
+├── README.md
+├── final_deliverable.pdf
+├── main_notebook.ipynb
+├── requirements.txt
+├── checkpoints/
+│   ├── checkpoint_1.ipynb
+│   └── checkpoint_2.ipynb
+├── scripts/
+│   ├── download_video_games_data.py
+│   ├── run_video_games_analysis.py
+│   └── build_final_notebook.py
+└── src/
+    └── amazon_video_games_project/
+        ├── __init__.py
+        └── analysis.py
+```
+
 ## Dataset
 
-- Source: [Amazon Review Data (2018)](https://nijianmo.github.io/amazon/index.html)
-- Category used here: `Video_Games_5`
+- Dataset: Amazon Review Data (2018), `Video_Games_5`
+- Source: [https://nijianmo.github.io/amazon/index.html](https://nijianmo.github.io/amazon/index.html)
+- Direct file: `https://jmcauley.ucsd.edu/data/amazon_v2/categoryFilesSmall/Video_Games_5.json.gz`
 - Expected local path: `data/raw/Video_Games_5.json.gz`
+- Download helper: `python scripts/download_video_games_data.py`
+- Preprocessing: combine `summary` and `reviewText`, compute review metadata, aggregate reviews to product-level documents, keep the top 400 products with at least 15 reviews, build TF-IDF text features, and build a shared-reviewer graph with a minimum of 2 shared reviewers per edge.
 
-The raw dataset is not committed to the repository because of size.
+The raw dataset is not committed because of size.
 
 ## Setup
 
@@ -51,6 +73,20 @@ If `matplotlib` complains about a non-writable config directory in WSL, set:
 ```bash
 export MPLCONFIGDIR=/tmp/matplotlib
 ```
+
+## Environment
+
+- Python: `3.12.3`
+- Key dependencies:
+  - `pandas==3.0.2`
+  - `numpy==2.4.4`
+  - `scikit-learn==1.8.0`
+  - `scipy==1.17.1`
+  - `networkx==3.6.1`
+  - `matplotlib==3.10.8`
+  - `seaborn==0.13.2`
+
+The full pinned environment is listed in `requirements.txt`.
 
 ## Download the Dataset
 
